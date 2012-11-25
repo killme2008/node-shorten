@@ -21,7 +21,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `st_links`;
 CREATE TABLE `st_links` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `link_id` varchar(64) NOT NULL,
+  `link_id` varchar(64) binary NOT NULL,
   `url` text NOT NULL,
   `save_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
