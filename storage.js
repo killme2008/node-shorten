@@ -33,31 +33,19 @@ function Storage(config){
 
 
 Storage.prototype.save = function(link, callback){
-	this.connection.query('INSERT INTO st_links SET ?', link, function(err,result){
-		if(callback)
-			callback(err,result);
-	});
+	this.connection.query('INSERT INTO st_links SET ?', link, callback);
 }
 
 Storage.prototype.getLinkById = function(id, callback){
-	this.connection.query('SELECT * from st_links where link_id = ?', id, function(err,rows){
-		if(callback)
-			callback(err,rows);
-	});
+	this.connection.query('SELECT * from st_links where link_id = ?', id, callback);
 }
 
 Storage.prototype.getLinkByURL = function(url, callback){
-	this.connection.query('SELECT * from st_links where url = ?', url, function(err,rows){
-		if(callback)
-			callback(err,rows);
-	});
+	this.connection.query('SELECT * from st_links where url = ?', url, callback);
 }
 
 Storage.prototype.getMaxLink = function(callback){
-	this.connection.query('SELECT * from st_links order by id desc limit 1', function(err,rows){
-		if(callback)
-			callback(err,rows);
-	});
+	this.connection.query('SELECT * from st_links order by id desc limit 1', callback);
 }
 
 exports.createStorage = function(config){
