@@ -11,6 +11,11 @@
 	     $('#success').hide();
 	     var url = $('#url').val();
 	     $('#url').val ('');
+	     if(!/^(http|ftp|https).*/.test(url)){
+	         $('#error').html("URL must starts with http/https/ftp.Only these protocols are supported.");
+	         $('#error').show(0.5);
+	         return;
+	     }
 	     $.post ("/link/add", {'url':url}, function (resp){
 	         if (resp.error){
 	           $('#error').html(resp.error);
@@ -30,7 +35,7 @@
 		<fieldset>
 		  <legend>Shorten</legend>
 		  <label>URL</label>
-		  <input name= "url" id= "url" type="text" class= "span8" placeholder="Type url...">
+		  <input name= "url" id= "url" type="text" class= "span8" placeholder="Type url starts with http/https/ftp...">
 		  <button type="submit" class="btn" onclick='postURL();'>Submit</button>
 		</fieldset>
 	  </form>
