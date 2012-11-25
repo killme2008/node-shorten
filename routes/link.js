@@ -43,7 +43,7 @@ var ACCESS_SCORE = 1;
 
 function linkNotFound(res, link_id){
 	console.log("Could not find link for %s", link_id);
-	utils.todayTopLinks(cache, 10, function(err, rt){
+	utils.todayTopLinks(cache, config.topN, function(err, rt){
 		res.render('index', { error: util.format("Could not find link by id %s",link_id), 'links': rt});
 	});
 }

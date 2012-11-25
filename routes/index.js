@@ -6,7 +6,7 @@ var redis = require('redis')
 var cache = redis.createClient(config.redisPort, config.redisHost);
 
 exports.index = function(req, res){
-	utils.todayTopLinks(cache, 10, function(err, rt){
+	utils.todayTopLinks(cache, config.topN, function(err, rt){
 		res.render('index', { 'links': rt});
 	});
 

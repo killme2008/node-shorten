@@ -7,7 +7,7 @@ exports.todayKey = function(){
 }
 
 exports.todayTopLinks = function(cache, n, callback){
-	cache.zrevrange(this.todayKey(), 0 , n , function(err,rt){
+	cache.zrevrange(this.todayKey(), 0 , n-1 , function(err,rt){
 		var links = [];
 		if(!err){
 			rt.forEach(function(e){

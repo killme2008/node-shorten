@@ -10,5 +10,6 @@ exports.config = {
 	site:'http://localhost:3000',
 	port:3000,
 	linkMinLength:18,
-	linkBits:6
+	linkBits:6,
+	topN:10
 }
