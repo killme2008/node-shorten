@@ -29,9 +29,10 @@ function formatURL(url){
 //Status codes.
 var SUCCESS = 0;
 var EXISTS_URL = 1;
-var EMPTY_URL = 2;
-var INVALID_URL = 3;
-var INTERNAL_ERR = 4;
+var NOT_SHORTEN = 2;
+var EMPTY_URL = 3;
+var INVALID_URL = 4;
+var INTERNAL_ERR = 5;
 
 exports.redirect = function(req,res){
 	var link_id = req.params.id;
@@ -51,7 +52,13 @@ exports.add = function(req,res){
 	if(!req.body.url)
 		res.send({status:EMPTY_URL, error:'url is empty'});
 	try{
-		var url = formatURL(req.body.url);
+		var url = req.body.url;
+		if( url.length < config.linkMinLength || url.indexOf(config.site) == 0){
+			//Too small link or it's been shorten by this web site,we don't want to short it.
+			res.send({status:NOT_SHORTEN, result:url});
+			return;
+		}
+		url = formatURL(url);
 		db.getLinkByURL(url,function(err,rows){
 			if(err){
 				console.log("Query link by url failed:%s",err);

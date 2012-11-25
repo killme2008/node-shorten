@@ -5,6 +5,7 @@ exports.config = {
 	mysqlDB:"shorten",
 
 	site:'http://localhost:3000',
-	linkMinLength:10,
+	port:3000,
+	linkMinLength:18,
 	linkBits:6
 }
