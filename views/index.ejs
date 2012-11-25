@@ -47,6 +47,23 @@
 	  <div class="alert alert-success" style='display:none' id='success'>
 	  </div>
 	</div>
+	<br />
+	<br />
+	<br />
+	<div class='container' style='width:50%'>
+	<table class='table table-hover'> 
+	  <caption><h5>Top 10 hot links in 24 hours</h5></caption>
+	  <tbody>
+		<% if (locals.links){ %>
+    		<% links.forEach (function (e){ %>
+	    	<tr>
+		      <td><a href='<%= e %>' target='_blank'><%= e %></a></td>
+    		</tr>
+	    	<% }); %>
+		<% } %>
+	  </tbody>
+	</table>
+	</div> 
 	<script type="text/javascript">
 	  <% if (locals.error) { %>
 	  $('#error').show(0.5);

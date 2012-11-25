@@ -2,10 +2,13 @@ var storage = require('../storage')
 , linkId = require('../id')
 , config = require('../config').config
 , util = require('util')
-, nurl = require('url');
+, nurl = require('url')
+, redis = require('redis')
+, utils = require('../utils');
 
 var id = linkId.createId();
 var db = storage.createStorage(config);
+var cache = redis.createClient(config.redisPort, config.redisHost);
 
 db.getMaxLink(function(err,rt){
 	if(err){
@@ -13,7 +16,7 @@ db.getMaxLink(function(err,rt){
 	}else{
 		if(rt.length > 0){
 			var link = rt[0];
-			id = linkId.createId(link.link_id);
+			id.value = link.link_id;
 			console.log("Initial link id is %s",link.link_id);
 		}
 	}
@@ -34,16 +37,39 @@ var EMPTY_URL = 3;
 var INVALID_URL = 4;
 var INTERNAL_ERR = 5;
 
+//Score for a url
+var ADD_SCORE = 2;
+var ACCESS_SCORE = 1;
+
+function linkNotFound(res, link_id){
+	console.log("Could not find link for %s", link_id);
+	utils.todayTopLinks(cache, 10, function(err, rt){
+		res.render('index', { error: util.format("Could not find link by id %s",link_id), 'links': rt});
+	});
+}
+
+function redirectLink(res, link){
+	cache.zincrby(utils.todayKey(), ACCESS_SCORE, link.link_id);
+	res.redirect(link.url);
+}
+
 exports.redirect = function(req,res){
 	var link_id = req.params.id;
-	db.getLinkById(link_id, function(err,rows){
-		if(err || rows.length == 0){
-			console.log("Could not find link for %s", link_id);
-			res.render('index',{ error: util.format("Could not find link by id %s",link_id)});
-			return;
+	//query from cache,if not found,query it from database
+	cache.get(link_id, function(err, link){
+		if(err || link == null){
+			db.getLinkById(link_id, function(err,rows){
+				if(err || rows.length == 0){
+					linkNotFound(res, link_id);
+					return;
+				}else{
+					var link = rows[0];
+					cache.set(link_id, JSON.stringify(link));
+					redirectLink(res, link);
+				}
+			});
 		}else{
-			var link = rows[0];
-			res.redirect(link.url);
+			redirectLink(res, JSON.parse(link));
 		}
 	});
 }
@@ -67,6 +93,7 @@ exports.add = function(req,res){
 			}
 			if(rows.length > 0){
 				var link  = rows[0];
+				cache.zincrby(utils.todayKey(), ADD_SCORE, link.link_id);
 				res.send({status:EXISTS_URL, result:util.format("%s/%s",config.site,link.link_id)});
 			}else{
 				var link_id = id.nextId();
@@ -78,6 +105,8 @@ exports.add = function(req,res){
 						return;
 					}
 					if(rt.affectedRows == 1){
+						cache.set(link_id, JSON.stringify(link));
+						cache.zincrby(utils.todayKey(), ADD_SCORE, link_id);
 						res.send({status:SUCCESS,result:util.format("%s/%s",config.site,link_id)});
 					}else{
 						res.send({status:INTERNAL_ERR, error:'Internal server error,please try it later'});

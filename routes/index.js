@@ -1,8 +1,13 @@
+var redis = require('redis')
+, util = require('util')
+, utils = require('../utils')
+, config = require('../config').config;
 
-/*
- * GET home page.
- */
+var cache = redis.createClient(config.redisPort, config.redisHost);
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+	utils.todayTopLinks(cache, 10, function(err, rt){
+		res.render('index', { 'links': rt});
+	});
+
 };
