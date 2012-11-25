@@ -3,6 +3,7 @@
   <head>
     <title>Shoren by nodejs</title>
     <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+    <link rel='stylesheet' href='/stylesheets/docs.css' />
 	<script src="/javascripts/jquery-1.8.3.min.js"></script>
 	<script type="text/javascript">
 	  function postURL (){
@@ -43,8 +44,21 @@
 	</div>
 	<script type="text/javascript">
 	  <% if (locals.error) { %>
-	     $('#error').show(0.5);
+	  $('#error').show(0.5);
       <% } %>
 	</script>
+	 <footer class="footer">
+      <div class="container">
+		 <p>Powered by node.js and express.js</p>
+		 <ul class="footer-links">
+          <li><a href="http://nodejs.org">Node.js</a></li>
+          <li class="muted">&middot;</li>
+          <li><a href="http://expressjs.com">Express.js</a></li>
+          <li class="muted">&middot;</li>
+          <li><a href="https://github.com/killme2008/node-shorten">Node shorten</a></li>
+        </ul>
+	  </div>
+    </footer>
+	<div>
   </body>
 </html>
