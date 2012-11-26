@@ -1,0 +1,21 @@
+{
+  "name": "Node shorten chrome plugin",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Adds a url shorten button to the browser.",
+  "background": {
+        "scripts": ["shorten.js"]
+  },
+  "browser_action": {
+      "default_icon": "icon.png"
+  },
+  "permissions": [
+    "http://fnil.me/",
+	"tabs",
+	"clipboardWrite",
+	 "notifications"
+  ],
+   "web_accessible_resources": [
+    "icon.png"
+  ]
+}
