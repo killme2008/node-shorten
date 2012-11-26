@@ -10,20 +10,25 @@ function shortenURL(tab){
 	req.onreadystatechange = function(){           
 		if(req.readyState === 4 && req.status === 200){
 			var rt = JSON.parse(req.responseText);
+			var notification;
 			if(rt.error){
-				alert(rt.error);
+				notification = webkitNotifications.createNotification(
+					'icon.png',
+					'Shorten error',
+					rt.error
+				);
 			}else{
 				copyToClipboard(rt.result);
-				var notification = webkitNotifications.createNotification(
+				notification = webkitNotifications.createNotification(
 					'icon.png',
 					'Shorten',
 					'Shorten URL:'+rt.result+",it's on clipboard,you can paste it."
 				);
-				notification.show();
-				setTimeout(function(){
-					notification.cancel();
-				},5000);
 			}
+			notification.show();
+			setTimeout(function(){
+				notification.cancel();
+			},4000);
 		}
 	}
 	req.send(JSON.stringify({'url':url}));
