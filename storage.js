@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 
-function handleDisconnect(connection) {
+function handleDisconnect(self, connection) {
   connection.on('error', function(err) {
     if (!err.fatal) {
       return;
@@ -12,8 +12,8 @@ function handleDisconnect(connection) {
 
     console.log('Re-connecting lost connection: ' + err.stack);
 
-    connection = mysql.createConnection(connection.config);
-    handleDisconnect(connection);
+    self.connection = mysql.createConnection(connection.config);
+    handleDisconnect(self,connection);
     connection.connect();
   });
 }
@@ -27,7 +27,7 @@ function Storage(config){
 	});
 
 	connection.connect();
-	handleDisconnect(connection);
+	handleDisconnect(this, connection);
 	this.connection = connection;
 }
 
