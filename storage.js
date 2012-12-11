@@ -13,8 +13,8 @@ function handleDisconnect(self, connection) {
     console.log('Re-connecting lost connection: ' + err.stack);
 
     self.connection = mysql.createConnection(connection.config);
-    handleDisconnect(self,connection);
-    connection.connect();
+    handleDisconnect(self,self.connection);
+    self.connection.connect();
   });
 }
 
@@ -25,9 +25,8 @@ function Storage(config){
 		password : config.mysqlPassword,
 		database : config.mysqlDB
 	});
-
-	connection.connect();
 	handleDisconnect(this, connection);
+	connection.connect();
 	this.connection = connection;
 }
 
